@@ -1,5 +1,7 @@
 # Multiple Windows 3D Scene
 
+Live at: https://nikhilsaini09.github.io/3dSceneMulipleWindow/
+
 An interactive Three.js 3D scene synchronized in real-time across multiple browser windows and monitors using HTML5 `localStorage` and window coordinate tracking.
 
 As you move, resize, or open new browser windows, each window functions as a distinct spatial viewport into a shared 3D universe. Each window anchors its own animated 3D geometry that smoothly tracks its position relative to other windows on your desktop.
