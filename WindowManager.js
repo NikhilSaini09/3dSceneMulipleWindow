@@ -7,16 +7,23 @@ class WindowManager {
     #winChangeCallback;
 
     constructor() {
+        this.#windows = [];
+        this.#count = 0;
+
         // event listener for when local storage is changed from other window/tab
         window.addEventListener("storage", (event) =>{
-            if (event.key == "windows") {
-                let newWindows = JSON.parse(event.newValue);
-                let winChange = this.#didWindowsChange(this.#windows, newWindows);
+            if (event.key == "windows" && event.newValue) {
+                try {
+                    let newWindows = JSON.parse(event.newValue);
+                    let winChange = this.#didWindowsChange(this.#windows, newWindows);
 
-                this.#windows = newWindows;
+                    this.#windows = newWindows;
 
-                if (winChange) {
-                    if(this.#winChangeCallback) this.#winChangeCallback();
+                    if (winChange) {
+                        if(this.#winChangeCallback) this.#winChangeCallback();
+                    }
+                } catch (e) {
+                    console.error("Failed to parse windows from storage event:", e);
                 }
             }
         });
@@ -24,15 +31,16 @@ class WindowManager {
         // event listener for when current window is about to be closed
         window.addEventListener("beforeunload", ()=> {
             let index = this.getWindowIndexFromId(this.#id);
-
-            this.#windows.splice(index, 1);
-            this.updateWindowsLocalStorage();
+            if (index !== -1) {
+                this.#windows.splice(index, 1);
+                this.updateWindowsLocalStorage();
+            }
         });
     }
 
     init(metaData) {
         this.#windows = JSON.parse(localStorage.getItem("windows")) || [];
-        this.#count = localStorage.getItem("count") || 0;
+        this.#count = parseInt(localStorage.getItem("count") || "0", 10);
         this.#count++;
         this.#id = this.#count;
         
@@ -66,13 +74,21 @@ class WindowManager {
     }
 
     #didWindowsChange(prevWins, newWins) {
-        if (prevWins.length != newWins.length) {
-            return true;
-        } else {
-            for (let i=0; i<prevWins.length; i++) {
-                if (prevWins[i].id != newWins[i].id) return true;
-            }
-            return false;
+        if (!prevWins || !newWins) return true;
+        if (prevWins.length != newWins.length) return true;
+        for (let i = 0; i < prevWins.length; i++) {
+            if (prevWins[i].id !== newWins[i].id) return true;
+            if (JSON.stringify(prevWins[i].metaData) !== JSON.stringify(newWins[i].metaData)) return true;
+        }
+        return false;
+    }
+
+    setMetaData(metaData) {
+        this.#winData.metaData = metaData;
+        let index = this.getWindowIndexFromId(this.#id);
+        if (index !== -1) {
+            this.#windows[index].metaData = metaData;
+            this.updateWindowsLocalStorage();
         }
     }
 

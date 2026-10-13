@@ -4,17 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multiple Windows 3d Effect</title>
-<!--     <script type="text/javascript" src="./threeR124_MINI_Lib.js"></script> -->
+    <script type="text/javascript" src="./threeR124_MINI_lib.js"></script>
     <style type="text/css">
-        *{
+        * {
             margin: 0;
             padding: 0;
+            overflow: hidden;
+            user-select: none;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            cursor: default;
+        }
+
+        #hud {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(18, 18, 24, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #ffffff;
+            padding: 9px 18px;
+            border-radius: 999px;
+            font-size: 13px;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 100;
+        }
+
+        #hud .badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        #hud .shape-name {
+            font-weight: 600;
+            color: #00e5ff;
+        }
+
+        .hint {
+            opacity: 0.6;
+            font-size: 11px;
         }
     </style>
-    <!-- <script src="./WindowManager.js"></script> -->
 </head>
 <body>
-    <!-- <script src="./main.js"></script> -->
+    <div id="hud">
+        <span class="badge" id="hud-index">1 / 6</span>
+        <span>Shape: <span class="shape-name" id="hud-name">Torus</span></span>
+        <span class="hint">(Click center to switch)</span>
+    </div>
     <script type="module" src="main.js"></script>
 </body>
 </html>
